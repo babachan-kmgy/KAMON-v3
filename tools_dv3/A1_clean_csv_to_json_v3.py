@@ -1,14 +1,17 @@
 import csv
 import json
+
 import os
 
-INPUT_CSV = r"C:\KAMON\archive_projects\research_projects\surname_project\core\archive\original_exports\A-1.csv"
-OUTPUT_JSON = r"C:\KAMON\development\tools_dv3\A1_clean.json"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+INPUT_CSV = os.path.join(current_dir, "A1_clean.csv")
+OUTPUT_JSON = os.path.join(current_dir, "A1_clean.json")
+
 
 def convert():
     output = []
 
-    with open(INPUT_CSV, "r", encoding="utf-8") as f:
+    with open(INPUT_CSV, encoding="utf-8") as f:
         reader = csv.reader(f)
         rows = list(reader)
 
@@ -22,15 +25,15 @@ def convert():
         rank = row[0]
         kanji = row[4]
         stable_id = row[5]
-        yomi = row[6]          # Furigana-1
-        romaji = row[7]        # Latin alphabet-1
+        yomi = row[6]  # Furigana-1
+        romaji = row[7]  # Latin alphabet-1
 
         entry = {
             "rank": int(rank) if rank.isdigit() else None,
             "kanji": kanji,
             "yomi": yomi,
             "romaji": romaji,
-            "stable_id": stable_id
+            "stable_id": stable_id,
         }
         output.append(entry)
 

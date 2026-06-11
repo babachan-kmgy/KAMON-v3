@@ -4,7 +4,7 @@ import os
 BASE = os.path.join("data", "surname")
 SRC = os.path.join(BASE, "canonical.json")
 
-with open(SRC, "r", encoding="utf-8") as f:
+with open(SRC, encoding="utf-8") as f:
     arr = json.load(f)
 
 # arr は list のはず

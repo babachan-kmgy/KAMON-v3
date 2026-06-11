@@ -1,7 +1,9 @@
 from fastapi import APIRouter
+
 from app.services.search_engine import normalize_query
 
 router = APIRouter()
+
 
 @router.get("/normalize")
 def normalize(q: str):

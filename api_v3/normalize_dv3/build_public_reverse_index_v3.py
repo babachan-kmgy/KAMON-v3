@@ -6,7 +6,7 @@ OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "public_reverse_index_v3.j
 
 
 def load_input():
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 

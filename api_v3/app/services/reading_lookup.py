@@ -5,6 +5,7 @@ from app.loaders.reading_loader import load_reading
 # ---------------------------------------------------------
 reading_dict = load_reading()
 
+
 # ---------------------------------------------------------
 # 読み（ひらがな）を取得
 # ---------------------------------------------------------
@@ -15,6 +16,7 @@ def lookup_yomi(kanji: str):
     """
     entry = reading_dict.get(kanji)
     return entry.get("yomi") if entry else None
+
 
 # ---------------------------------------------------------
 # ローマ字を取得

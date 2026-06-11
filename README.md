@@ -60,21 +60,22 @@ Rebuildable pipeline via normalize/
 Utility tools for validation & generation
 
 📁 Repository Structure
-コード
+```
 KAMON-v3/
-    api/                # FastAPI application
-    dictionaries/       # v3 dictionary data
-    normalize/          # Normalization rules & build scripts
-    tools/              # Utility tools
+    api_v3/             # FastAPI application (includes normalize_dv3/)
+    dictionaries_v3/    # Legacy dictionary data (v3 optimized files are placed in api_v3/data/)
+    tools_dv3/          # Utility tools for dictionary generation & benchmarking
     ui/                 # Simple search UI
-    tests/              # Test suite
+    tests_dv3/          # Test suite
     README.md
     README_ja.md
     requirements.txt
+```
 🧩 API Overview
 Run the API
-コード
-uvicorn api.app.main:app --reload
+```bash
+uvicorn api_v3.app.main:app --reload
+```
 Main Endpoints
 Method	Path	Description
 GET	/normalize	Normalize variant kanji
@@ -97,26 +98,42 @@ reverse_index_v3.json
 Reading → surname mapping.
 
 🔧 Tools
-Located in tools/:
-
-convert_canonical.py
-
-generate_reading_dict.py
-
-validate_v3.py
+Located in tools_dv3/:
+* `convert_canonical.py`
+* `generate_reading_dict.py`
+* `validate_v3.py`
+* `benchmark.py` (Search performance benchmarking)
 
 🧪 Tests
-Run:
 
-コード
-pytest tests/
+#### 1. Unit Tests (pytest)
+To run API functionality and normalization logic tests:
+```bash
+# Activate virtual environment, then run:
+pytest tests_dv3/
+
+# Run with stdout logging enabled:
+pytest -s tests_dv3/
+```
+
+#### 2. Load Tests (Locust)
+To run load tests against the API:
+```bash
+# With the API running (at http://localhost:8000), execute:
+locust -f locustfile.py -H http://localhost:8000
+
+# Open http://localhost:8089 in your browser to configure and launch the load test.
+```
 🛠 Development
 Example requirements.txt
-コード
+```
 fastapi
 uvicorn
 pydantic
 python-Levenshtein
+locust
+pytest
+```
 📄 License
 To be added.
 

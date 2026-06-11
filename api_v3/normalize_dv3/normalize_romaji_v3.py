@@ -1,7 +1,8 @@
-import unicodedata
-import re
 import json
 import os
+import re
+import unicodedata
+
 
 # ---------------------------------------------------------
 # 正規化ルールの読み込み
@@ -10,8 +11,9 @@ def load_rules():
     rules_path = os.path.join(os.path.dirname(__file__), "normalization_rules.json")
     if not os.path.exists(rules_path):
         return {}
-    with open(rules_path, "r", encoding="utf-8") as f:
+    with open(rules_path, encoding="utf-8") as f:
         return json.load(f)
+
 
 RULES = load_rules()
 
@@ -39,12 +41,14 @@ def normalize_long_vowels(text: str) -> str:
     if not text:
         return ""
 
+    # 1. 1文字の長音記号を通常の母音に置換
+    text = text.replace("ô", "o").replace("ö", "o")
+    text = text.replace("ō", "o").replace("Ō", "o")
+
+    # 2. 複数文字の長音表記ルール（normalization_rules.json）を適用
     long_rules = RULES.get("romaji_long_vowels", {})
     for k, v in long_rules.items():
         text = text.replace(k, v)
-
-    text = text.replace("ô", "o").replace("ö", "o")
-    text = text.replace("ō", "o").replace("Ō", "o")
 
     return text
 
@@ -61,7 +65,7 @@ def canonical_romaji(text: str) -> str:
     t = remove_symbols(t)
     t = normalize_long_vowels(t)
 
-    return t
+    return unicode_normalize(t)
 
 
 # ---------------------------------------------------------
@@ -86,9 +90,9 @@ def generate_romaji_variants(text: str) -> list:
     # 長音揺れ（最初の o のみ）
     if "o" in canonical:
         idx = canonical.index("o")
-        variants.add(canonical[:idx] + "oo" + canonical[idx+1:])
-        variants.add(canonical[:idx] + "ou" + canonical[idx+1:])
-        variants.add(canonical[:idx] + "oh" + canonical[idx+1:])
+        variants.add(canonical[:idx] + "oo" + canonical[idx + 1 :])
+        variants.add(canonical[:idx] + "ou" + canonical[idx + 1 :])
+        variants.add(canonical[:idx] + "oh" + canonical[idx + 1 :])
 
     # 元の文字に ō が含まれていた場合
     if "ō" in base_l:
@@ -118,10 +122,7 @@ def normalize_romaji(text: str) -> dict:
     canonical = canonical_romaji(text)
     variants = generate_romaji_variants(text)
 
-    return {
-        "canonical": canonical,
-        "variants": variants
-    }
+    return {"canonical": canonical, "variants": variants}
 
 
 # --- 動作確認 ---

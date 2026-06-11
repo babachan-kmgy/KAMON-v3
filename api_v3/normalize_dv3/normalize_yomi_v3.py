@@ -1,5 +1,6 @@
-import unicodedata
 import re
+import unicodedata
+
 
 # ---------------------------------------------------------
 # Unicode 正規化（NFKC）
@@ -93,10 +94,7 @@ def normalize_yomi(text: str) -> dict:
     canonical = canonical_yomi(text)
     variants = generate_yomi_variants(text)
 
-    return {
-        "canonical": canonical,
-        "variants": variants
-    }
+    return {"canonical": canonical, "variants": variants}
 
 
 # --- 動作確認 ---

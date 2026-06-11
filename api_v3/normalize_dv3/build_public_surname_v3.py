@@ -6,7 +6,7 @@ OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "public_surname_v3.json")
 
 
 def load_input():
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -19,7 +19,7 @@ def build_public_entry(row):
         "rank": row["rank"],
         "kanji": row["canonical_kanji"],
         "yomi": row["canonical_yomi"],
-        "romaji": row["canonical_romaji"]
+        "romaji": row["canonical_romaji"],
     }
 
 

@@ -1,0 +1,5 @@
+{
+  "extraPaths": [
+    "api_v3/normalize_dv3"
+  ]
+}
