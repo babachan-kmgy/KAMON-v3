@@ -2,6 +2,7 @@ from app.loaders.surname_loader import load_variants
 
 variants = load_variants()
 
+
 def expand_variants(kanji: str):
     """
     異体字展開（variants.json が str / list / dict でも壊れない安全版）

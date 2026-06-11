@@ -1,8 +1,10 @@
 from fastapi import APIRouter
+
 from app.services.search.engine import search_surname
 
 # ルーターに prefix を付けることで、URL が二重にならない
 router = APIRouter(prefix="/search")
+
 
 @router.get("")
 def search(q: str):

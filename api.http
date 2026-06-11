@@ -1,0 +1,20 @@
+### 1. Root Endpoint (疎通確認)
+GET http://localhost:8000/
+
+### 2. Search Endpoint (佐藤の完全一致検索)
+GET http://localhost:8000/search?q=佐藤
+
+### 3. Search Endpoint (髙橋の異体字検索 -> 高橋が返る)
+GET http://localhost:8000/search?q=髙橋
+
+### 4. Search Endpoint (部分一致検索)
+GET http://localhost:8000/search?q=田
+
+### 5. Search Endpoint (ローマ字検索)
+GET http://localhost:8000/search?q=sato
+
+### 6. Normalize Endpoint (入力文字の正規化・バリアント生成)
+GET http://localhost:8000/normalize?q=髙橋
+
+### 7. Normalize Endpoint (カタカナの正規化・ひらがな/カタカナ揺れ)
+GET http://localhost:8000/normalize?q=タカハシ

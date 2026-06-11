@@ -6,7 +6,7 @@ OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "reverse_index_v3.json")
 
 
 def load_variant_map():
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 

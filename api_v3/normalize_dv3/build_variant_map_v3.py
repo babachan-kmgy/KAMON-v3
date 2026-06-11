@@ -1,17 +1,16 @@
 import json
 import os
 
+from normalize_kanji_v3 import normalize_kanji
 from normalize_romaji_v3 import normalize_romaji
 from normalize_yomi_v3 import normalize_yomi
-from normalize_kanji_v3 import normalize_kanji
-
 
 INPUT_PATH = os.path.join(os.path.dirname(__file__), "surname_full_v3.json")
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "variant_map_v3.json")
 
 
 def load_input():
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 

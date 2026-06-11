@@ -48,21 +48,22 @@ normalize/ による再構築可能なパイプライン
 tools/ による辞書生成ツール群
 
 📁 リポジトリ構成
-コード
+```
 KAMON-v3/
-    api/                # FastAPI アプリケーション
-    dictionaries/       # v3 辞書データ
-    normalize/          # 正規化ルール & ビルドスクリプト
-    tools/              # ユーティリティツール
+    api_v3/             # FastAPI アプリケーション (normalize_dv3/ を含む)
+    dictionaries_v3/    # 旧版辞書データ (v3最適版は api_v3/data/ に配置されます)
+    tools_dv3/          # 辞書生成・ベンチマークなどのユーティリティツール
     ui/                 # 簡易検索 UI
-    tests/              # テストコード
+    tests_dv3/          # テストコード
     README.md
     README_ja.md
     requirements.txt
+```
 🧩 API 概要
 起動方法
-コード
-uvicorn api.app.main:app --reload
+```bash
+uvicorn api_v3.app.main:app --reload
+```
 主なエンドポイント
 Method	Path	説明
 GET	/normalize	異体字 → 正字の正規化
@@ -85,26 +86,44 @@ reverse_index_v3.json
 読み → 姓の逆引き。
 
 🔧 ツール
-tools/ には辞書生成・検証ツールが含まれます。
+tools_dv3/ には辞書生成・検証・ベンチマークツールが含まれます。
 
 例：
-
-convert_canonical.py
-
-generate_reading_dict.py
-
-validate_v3.py
+* `convert_canonical.py`
+* `generate_reading_dict.py`
+* `validate_v3.py`
+* `benchmark.py` (検索パフォーマンスの比較検証)
 
 🧪 テスト
-コード
-pytest tests/
+
+#### 1. ユニットテスト (pytest)
+APIの動作や正規化ロジックのテストを実行します。
+```bash
+# 仮想環境のアクティベート後、以下を実行
+pytest tests_dv3/
+
+# ログを表示しながら実行する場合
+pytest -s tests_dv3/
+```
+
+#### 2. 負荷テスト (Locust)
+APIエンドポイントに同時アクセス負荷をかけるテストを実行します。
+```bash
+# APIを起動した状態 (http://localhost:8000) で以下を実行
+locust -f locustfile.py -H http://localhost:8000
+
+# コマンド実行後、ブラウザで http://localhost:8089 にアクセスして負荷設定を行います。
+```
 🛠 開発
 requirements.txt（例）
-コード
+```
 fastapi
 uvicorn
 pydantic
 python-Levenshtein
+locust
+pytest
+```
 📄 ライセンス
 後日追加予定。
 

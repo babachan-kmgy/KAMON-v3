@@ -1,7 +1,8 @@
-import unicodedata
 import json
 import os
 import re
+import unicodedata
+
 
 # ---------------------------------------------------------
 # 正規化ルールの読み込み
@@ -10,8 +11,9 @@ def load_rules():
     rules_path = os.path.join(os.path.dirname(__file__), "normalization_rules.json")
     if not os.path.exists(rules_path):
         return {}
-    with open(rules_path, "r", encoding="utf-8") as f:
+    with open(rules_path, encoding="utf-8") as f:
         return json.load(f)
+
 
 RULES = load_rules()
 
@@ -47,7 +49,7 @@ def canonical_kanji(text: str) -> str:
     for old, new in kanji_rules.items():
         t = t.replace(old, new)
 
-    return t
+    return unicode_normalize(t)
 
 
 # ---------------------------------------------------------
@@ -90,10 +92,7 @@ def normalize_kanji(text: str) -> dict:
     canonical = canonical_kanji(text)
     variants = generate_kanji_variants(text)
 
-    return {
-        "canonical": canonical,
-        "variants": variants
-    }
+    return {"canonical": canonical, "variants": variants}
 
 
 # --- 動作確認 ---

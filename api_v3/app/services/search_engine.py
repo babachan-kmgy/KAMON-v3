@@ -1,21 +1,21 @@
-import sys
 import os
+import sys
 
 # ---------------------------------------------------------
 # 正しいパス設定（services → app → api_v3 → normalize_dv3）
 # ---------------------------------------------------------
 sys.path.append(
     os.path.join(
-        os.path.dirname(__file__),   # .../api_v3/app/services
-        "..",                        # .../api_v3/app
-        "..",                        # .../api_v3
-        "normalize_dv3"              # .../api_v3/normalize_dv3
+        os.path.dirname(__file__),  # .../api_v3/app/services
+        "..",  # .../api_v3/app
+        "..",  # .../api_v3
+        "normalize_dv3",  # .../api_v3/normalize_dv3
     )
 )
 
+from normalize_kanji_v3 import normalize_kanji
 from normalize_romaji_v3 import normalize_romaji
 from normalize_yomi_v3 import normalize_yomi
-from normalize_kanji_v3 import normalize_kanji
 
 
 # ---------------------------------------------------------
@@ -24,9 +24,9 @@ from normalize_kanji_v3 import normalize_kanji
 # ---------------------------------------------------------
 def normalize_query(q: str):
     # 3方向の正規化（各関数は dict を返す前提）
-    romaji = normalize_romaji(q)      # {"canonical": "...", "variants": [...]}
-    yomi = normalize_yomi(q)          # {"canonical": "...", "variants": [...]}
-    kanji = normalize_kanji(q)        # {"canonical": "...", "variants": [...]}
+    romaji = normalize_romaji(q)  # {"canonical": "...", "variants": [...]}
+    yomi = normalize_yomi(q)  # {"canonical": "...", "variants": [...]}
+    kanji = normalize_kanji(q)  # {"canonical": "...", "variants": [...]}
 
     results = set()
 
