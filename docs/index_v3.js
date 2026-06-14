@@ -1,120 +1,53 @@
-// 検索ボタン・Enter キーのハンドラ設定
 document.addEventListener("DOMContentLoaded", () => {
-    const input = document.getElementById("queryInput");
+
+    console.log("KAMON v3 UI loaded.");
+
+    const input = document.getElementById("surnameInput");
     const button = document.getElementById("searchButton");
+    const resultArea = document.getElementById("resultArea");
 
-    button.addEventListener("click", () => {
+    if (!input || !button || !resultArea) {
+        console.error("DOM 要素が見つかりません。ID を確認してください。");
+        return;
+    }
+
+    // ★ API の URL（開発中はローカルでOK）
+    // GitHub Pages からローカル API は直接呼べないので、
+    // ローカルで UI を開く場合は http://127.0.0.1:8001 などを使う。
+    const API_BASE = "http://127.0.0.1:8000";
+
+    button.addEventListener("click", async () => {
         const q = input.value.trim();
-        if (!q) return;
-        searchSurname(q);
-    });
+        if (!q) {
+            resultArea.innerHTML = "姓を入力してください。";
+            return;
+        }
 
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            const q = input.value.trim();
-            if (!q) return;
-            searchSurname(q);
+        resultArea.innerHTML = "検索中…";
+
+        try {
+            const url = `${API_BASE}/search?surname=${encodeURIComponent(q)}`;
+            console.log("API request:", url);
+
+            const res = await fetch(url);
+
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            resultArea.innerHTML = `
+                <h2>検索結果</h2>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        } catch (err) {
+            console.error("API 接続エラー:", err);
+            resultArea.innerHTML = `
+                <span style="color:red;">API に接続できませんでした。</span><br>
+                ローカル API が起動しているか確認してください。
+            `;
         }
     });
+
 });
-
-// 通常の姓検索（既存 API を想定）
-async function searchSurname(query) {
-    const status = document.getElementById("status");
-    const list = document.getElementById("results");
-
-    status.textContent = "検索中…";
-    list.innerHTML = "";
-    hideRagDescription();
-
-    try {
-        const res = await fetch(`/api_v3/search?query=${encodeURIComponent(query)}`);
-        const data = await res.json();
-
-        if (!Array.isArray(data) || data.length === 0) {
-            status.textContent = "該当する姓が見つかりませんでした。";
-            return;
-        }
-
-        renderResults(data);
-        status.textContent = `${data.length} 件ヒットしました。`;
-
-        // RAG 説明文を取得
-        fetchRagDescription(query);
-
-    } catch (e) {
-        console.error(e);
-        status.textContent = "検索 API に接続できませんでした。";
-    }
-}
-
-// 検索結果の描画（簡易版）
-function renderResults(items) {
-    const list = document.getElementById("results");
-    list.innerHTML = "";
-
-    items.forEach(item => {
-        const li = document.createElement("li");
-
-        const kanji = document.createElement("div");
-        kanji.className = "kanji";
-        kanji.textContent = item.canonical_kanji || item.kanji || "";
-
-        const yomi = document.createElement("div");
-        yomi.className = "yomi";
-        yomi.textContent = item.canonical_yomi || item.yomi || "";
-
-        const romaji = document.createElement("div");
-        romaji.className = "romaji";
-        romaji.textContent = item.canonical_romaji || item.romaji || "";
-
-        li.appendChild(kanji);
-        li.appendChild(yomi);
-        li.appendChild(romaji);
-
-        list.appendChild(li);
-    });
-}
-
-// RAG 説明文取得
-async function fetchRagDescription(query) {
-    const box = document.getElementById("ragDescription");
-    box.classList.add("hidden");
-    box.textContent = "";
-
-    try {
-        const res = await fetch(`/api_v3/rag?query=${encodeURIComponent(query)}`);
-        const data = await res.json();
-
-        if (data.error) {
-            box.textContent = "説明文を取得できませんでした。";
-            box.classList.remove("hidden");
-            return;
-        }
-
-        box.innerHTML = `
-            <strong>説明：</strong><br>
-            ${escapeHtml(data.description)}
-        `;
-        box.classList.remove("hidden");
-
-    } catch (e) {
-        console.error(e);
-        box.textContent = "RAG API に接続できませんでした。";
-        box.classList.remove("hidden");
-    }
-}
-
-function hideRagDescription() {
-    const box = document.getElementById("ragDescription");
-    box.classList.add("hidden");
-    box.textContent = "";
-}
-
-// 簡易エスケープ
-function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
