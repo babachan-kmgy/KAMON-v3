@@ -1,141 +1,93 @@
-[日本語版 README](README_ja.md)
+[日本語版 READMEはこちら](README_ja.md)
 
-KAMON‑v3 — Japanese Surname Normalization & Dictionary API
-KAMON‑v3 is a comprehensive system for processing Japanese surnames, providing:
+# KAMON‑v3 — Japanese Surname Dictionary & RAG API
 
-Variant normalization (unifying different kanji forms)
+KAMON‑v3 is an open‑source project that provides a fast Japanese surname dictionary API,  
+combined with a Retrieval‑Augmented Generation (RAG) system for generating concise explanations.
 
-Reading estimation (kana & romaji)
+This version is a complete redesign of previous releases (v1 / v2),  
+featuring a new dictionary structure, improved search engine, and a lightweight web UI.
 
-Reverse index search
+---
 
-FastAPI-based API
+## ✨ Features
 
-Reproducible dictionary build pipeline
+### 🔍 1. High‑performance surname search API
+- Endpoint: `/api_v3/search?query=sato`
+- Uses the public dictionary `public_surname_v3.json`
+- Supports partial matching
 
-Lightweight public dictionary set
+### 🧠 2. RAG‑based explanation generation
+- Endpoint: `/api_v3/rag?query=sato`
+- Vector‑based similar‑surname retrieval
+- LLM‑generated brief explanations
 
-This repository contains the public release of the KAMON‑v3 system.
+### 🖥 3. Web UI (ui_v3)
+- Simple browser‑based interface
+- Displays search results, similar surnames, and explanations
+- Fully local and lightweight
 
-🚀 Features
-1. Variant Normalization
-Unifies variant kanji forms such as:
+### 📚 4. Public dictionary (public_surname_v3.json)
+Dictionary format:
 
-髙橋 → 高橋
+{
+"SN000001": { "kanji": "佐藤", "yomi": "さとう", "romaji": "sato" },
+"SN000002": { "kanji": "鈴木", "yomi": "すずき", "romaji": "suzuki" }
+}
 
-渡邉 → 渡辺
+コード
 
-齋藤 → 斎藤
+The API converts this key‑value structure into a list internally.
 
-2. Reading Estimation
-Generates:
+---
 
-Hiragana
+## 📦 Directory Structure
 
-Katakana
+api_v3/            → FastAPI-based search API
+rag_v3/            → Similar surname search + RAG explanation
+ui_v3/             → Web UI (HTML / CSS / JS)
+dictionaries_v3/   → Public dictionary files
+docs/              → Technical documentation
 
-Romaji (Hepburn)
+コード
 
-3. Reverse Index Search
-Supports:
+---
 
-Reading → Surname
+## 🚀 Getting Started
 
-Romaji → Surname
+### 1. Start the RAG API (port 8010)
+cd rag_v3
+python rag_api.py
 
-Variant → Canonical form
+コード
 
-4. Fully Synchronized API & Dictionaries
-The API always reflects the latest dictionary build.
+### 2. Start the main API + UI (port 8011)
+cd api_v3/app
+python main.py
 
-5. v3 Improvements
-Fully redesigned normalization rules
+コード
 
-Stable ID structure
+### 3. Open the UI
+http://127.0.0.1:8011/
 
-Public & full dictionary separation
+コード
 
-Rebuildable pipeline via normalize/
+---
 
-Utility tools for validation & generation
+## 📄 License
+MIT License
 
-📁 Repository Structure
-```
-KAMON-v3/
-    api_v3/             # FastAPI application (includes normalize_dv3/)
-    dictionaries_v3/    # Legacy dictionary data (v3 optimized files are placed in api_v3/data/)
-    tools_dv3/          # Utility tools for dictionary generation & benchmarking
-    ui/                 # Simple search UI
-    tests_dv3/          # Test suite
-    README.md
-    README_ja.md
-    requirements.txt
-```
-🧩 API Overview
-Run the API
-```bash
-uvicorn api_v3.app.main:app --reload
-```
-Main Endpoints
-Method	Path	Description
-GET	/normalize	Normalize variant kanji
-GET	/search	Search surnames
-GET	/variants	List variant forms
-GET	/reverse	Reverse index search
+---
 
+## 🏛 Project Goals
 
-📚 Dictionaries
-public_surname_v3.json
-Lightweight public dictionary.
+- Provide a structured, open Japanese surname dictionary  
+- Preserve historical and cultural information  
+- Support researchers, developers, and genealogical projects  
+- Future integration with Japanese family crest (家紋) datasets
 
-surname_full_v3.json
-Full internal dictionary.
+---
 
-variant_map_v3.json
-Variant → canonical mapping.
-
-reverse_index_v3.json
-Reading → surname mapping.
-
-🔧 Tools
-Located in tools_dv3/:
-* `convert_canonical.py`
-* `generate_reading_dict.py`
-* `validate_v3.py`
-* `benchmark.py` (Search performance benchmarking)
-
-🧪 Tests
-
-#### 1. Unit Tests (pytest)
-To run API functionality and normalization logic tests:
-```bash
-# Activate virtual environment, then run:
-pytest tests_dv3/
-
-# Run with stdout logging enabled:
-pytest -s tests_dv3/
-```
-
-#### 2. Load Tests (Locust)
-To run load tests against the API:
-```bash
-# With the API running (at http://localhost:8000), execute:
-locust -f locustfile.py -H http://localhost:8000
-
-# Open http://localhost:8089 in your browser to configure and launch the load test.
-```
-🛠 Development
-Example requirements.txt
-```
-fastapi
-uvicorn
-pydantic
-python-Levenshtein
-locust
-pytest
-```
-📄 License
-To be added.
-
-🙌 Acknowledgements
-KAMON‑v3 aims to provide a reproducible, transparent, and accurate foundation for Japanese surname processing.
+## 🙏 Acknowledgements
+This project is supported by contributors interested in Japanese linguistics,  
+historical preservation, and open cultural datasets.
