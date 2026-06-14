@@ -2,29 +2,29 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KAMON v3 姓検索</title>
 
-    <!-- ★ CSS の正しいパス（/ui_v3/） -->
-    <link rel="stylesheet" href="/ui_v3/index_v3.css">
+    <!-- CSS（docs 内の index_v3.css を参照） -->
+    <link rel="stylesheet" href="index_v3.css">
+
+    <!-- favicon（存在しないので 404 を防ぐため削除 or コメントアウト） -->
+    <!-- <link rel="icon" href="favicon.ico"> -->
 </head>
+
 <body>
     <div class="container">
         <h1>KAMON v3 姓検索</h1>
 
         <div class="search-box">
-            <input id="queryInput" type="text" placeholder="姓を入力（例：佐藤）">
+            <input id="surnameInput" type="text" placeholder="姓を入力してください">
             <button id="searchButton">検索</button>
         </div>
 
-        <div id="status" class="status"></div>
-
-        <ul id="results" class="results"></ul>
-
-        <!-- RAG 説明表示領域 -->
-        <div id="ragDescription" class="rag-description hidden"></div>
+        <div id="resultArea"></div>
     </div>
 
-    <!-- ★ JS の正しいパス（/ui_v3/） -->
-    <script src="/ui_v3/index_v3.js"></script>
+    <!-- JS（docs 内の index_v3.js を参照） -->
+    <script src="index_v3.js" defer></script>
 </body>
 </html>
