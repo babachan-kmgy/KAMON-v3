@@ -1,132 +1,90 @@
-KAMON‑v3 — 日本の姓データ 正規化・辞書・検索 API
-KAMON‑v3 は、日本の姓データを
-正規化・異体字統合・読み推定・ローマ字変換・逆引き検索  
-まで一貫して処理できる最新版の辞書・API システムです。
+# KAMON-v3 — Japanese Surname Dictionary + RAG API
 
-本リポジトリは、KAMON‑v3 の 公開版 を含みます。
+KAMON-v3 は、日本の姓データを扱うための **高速辞書 API** と  
+**RAG（Retrieval-Augmented Generation）による説明生成** を備えた  
+オープンソースの日本語姓辞書プロジェクトです。
 
-🚀 特徴
-1. 異体字の統合（Variant Normalization）
-例：
+本リポジトリは、過去バージョン（v1 / v2）から構造を全面刷新し、  
+より正確で拡張性の高い “新しい公開ライン” として設計されています。
 
-髙橋 → 高橋
+---
 
-渡邉 → 渡辺
+## ✨ Features
 
-齋藤 → 斎藤
+### 🔍 1. 高速姓検索 API
+- `/api_v3/search?query=佐藤`
+- 公開辞書 `public_surname_v3.json` を使用
+- 部分一致検索に対応
 
-2. 読み（よみ）の推定
-ひらがな
+### 🧠 2. RAG による説明生成
+- `/api_v3/rag?query=佐藤`
+- 類似姓検索（ベクトル検索）
+- LLM による簡潔な説明文生成
 
-カタカナ
+### 🖥 3. Web UI（ui_v3）
+- ブラウザで姓検索が可能
+- 類似姓と説明文を表示
+- ローカルで動作する軽量 UI
 
-ローマ字（ヘボン式）
+### 📚 4. 公開辞書（public_surname_v3.json）
+- Key-Value 形式  
+{
+"SN000001": { "kanji": "佐藤", "yomi": "さとう", "romaji": "sato" },
+...
+}
 
-を自動生成。
+コード
+- API 内で list 形式に変換して利用
 
-3. 逆引き検索（Reverse Index）
-読み → 姓
+---
 
-ローマ字 → 姓
+## 📦 Directory Structure
 
-異体字 → 正字
+api_v3/        → FastAPI ベースの検索 API
+rag_v3/        → 類似姓検索 + 説明生成（RAG）
+ui_v3/         → Web UI（HTML / CSS / JS）
+dictionaries_v3/ → 公開辞書
+docs/          → 技術資料
 
-などの検索が可能。
+コード
 
-4. API と辞書が完全同期
-辞書の更新は API に即時反映される構造。
+---
 
-5. v3 の改善点
-正規化ルールを全面刷新
+## 🚀 Getting Started
 
-安定した ID 体系
+### 1. RAG API を起動（ポート 8010）
+cd rag_v3
+python rag_api.py
 
-公開用と内部用の辞書を分離
+コード
 
-normalize/ による再構築可能なパイプライン
+### 2. メイン API + UI を起動（ポート 8011）
+cd api_v3/app
+python main.py
 
-tools/ による辞書生成ツール群
+コード
 
-📁 リポジトリ構成
-```
-KAMON-v3/
-    api_v3/             # FastAPI アプリケーション (normalize_dv3/ を含む)
-    dictionaries_v3/    # 旧版辞書データ (v3最適版は api_v3/data/ に配置されます)
-    tools_dv3/          # 辞書生成・ベンチマークなどのユーティリティツール
-    ui/                 # 簡易検索 UI
-    tests_dv3/          # テストコード
-    README.md
-    README_ja.md
-    requirements.txt
-```
-🧩 API 概要
-起動方法
-```bash
-uvicorn api_v3.app.main:app --reload
-```
-主なエンドポイント
-Method	Path	説明
-GET	/normalize	異体字 → 正字の正規化
-GET	/search	姓の検索
-GET	/variants	異体字一覧
-GET	/reverse	読み → 姓の逆引き
+### 3. ブラウザでアクセス
+http://127.0.0.1:8011/
 
+コード
 
-📚 辞書データ
-public_surname_v3.json
-公開用の軽量辞書。
+---
 
-surname_full_v3.json
-内部用の完全版辞書。
+## 📄 License
+MIT License
 
-variant_map_v3.json
-異体字 → 正字のマッピング。
+---
 
-reverse_index_v3.json
-読み → 姓の逆引き。
+## 🏛 Project Goals
 
-🔧 ツール
-tools_dv3/ には辞書生成・検証・ベンチマークツールが含まれます。
+- 日本の姓データの体系化  
+- 歴史的・文化的情報の保存  
+- 研究者・開発者が利用できるオープンな基盤の提供  
+- 将来的には家紋データとの統合も視野に入れる
 
-例：
-* `convert_canonical.py`
-* `generate_reading_dict.py`
-* `validate_v3.py`
-* `benchmark.py` (検索パフォーマンスの比較検証)
+---
 
-🧪 テスト
-
-#### 1. ユニットテスト (pytest)
-APIの動作や正規化ロジックのテストを実行します。
-```bash
-# 仮想環境のアクティベート後、以下を実行
-pytest tests_dv3/
-
-# ログを表示しながら実行する場合
-pytest -s tests_dv3/
-```
-
-#### 2. 負荷テスト (Locust)
-APIエンドポイントに同時アクセス負荷をかけるテストを実行します。
-```bash
-# APIを起動した状態 (http://localhost:8000) で以下を実行
-locust -f locustfile.py -H http://localhost:8000
-
-# コマンド実行後、ブラウザで http://localhost:8089 にアクセスして負荷設定を行います。
-```
-🛠 開発
-requirements.txt（例）
-```
-fastapi
-uvicorn
-pydantic
-python-Levenshtein
-locust
-pytest
-```
-📄 ライセンス
-後日追加予定。
-
-🙌 謝辞
-KAMON‑v3 は、日本の姓データの正規化・統合・検索を
-より正確かつ再現性のある形で提供することを目的としています。
+## 🙏 Acknowledgements
+本プロジェクトは、日本語辞書・家紋研究・歴史資料の保存に関心を持つ  
+すべての人々の協力によって支えられています。
