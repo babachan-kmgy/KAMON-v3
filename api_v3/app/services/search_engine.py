@@ -17,16 +17,29 @@ from normalize_kanji_v3 import normalize_kanji
 from normalize_romaji_v3 import normalize_romaji
 from normalize_yomi_v3 import normalize_yomi
 
+# ---------------------------------------------------------
+# v3 辞書ローダー（TB 環境用）
+# ---------------------------------------------------------
+from app.loaders.surname_loader import (
+    load_variants,
+    load_full,
+    load_reverse_index,
+    load_canonical,
+)
+from app.loaders.dictionary_loader import (
+    load_public_surname,
+    load_public_reverse,
+)
+
 
 # ---------------------------------------------------------
 # 正規化（ローマ字・読み・漢字）完全版
 # 3方向の canonical + variants をすべて統合して返す
 # ---------------------------------------------------------
 def normalize_query(q: str):
-    # 3方向の正規化（各関数は dict を返す前提）
     romaji = normalize_romaji(q)  # {"canonical": "...", "variants": [...]}
-    yomi = normalize_yomi(q)  # {"canonical": "...", "variants": [...]}
-    kanji = normalize_kanji(q)  # {"canonical": "...", "variants": [...]}
+    yomi = normalize_yomi(q)
+    kanji = normalize_kanji(q)
 
     results = set()
 
@@ -52,8 +65,11 @@ def normalize_query(q: str):
 # 検索（query → stable_id → public_surname）
 # normalize_query() の揺れをすべて variant_map に照合
 # ---------------------------------------------------------
-def search_by_query(q, variant_map, public_surname):
+def search_by_query(q):
     normalized_keys = normalize_query(q)
+
+    variant_map = load_variants()
+    public_surname = load_public_surname()
 
     stable_ids = set()
     for key in normalized_keys:
@@ -72,7 +88,8 @@ def search_by_query(q, variant_map, public_surname):
 # ---------------------------------------------------------
 # ID から surname を取得
 # ---------------------------------------------------------
-def lookup_by_id(sid, public_surname):
+def lookup_by_id(sid):
+    public_surname = load_public_surname()
     for row in public_surname:
         if row["stable_id"] == sid:
             return row
@@ -82,5 +99,6 @@ def lookup_by_id(sid, public_surname):
 # ---------------------------------------------------------
 # ID から public_reverse を取得
 # ---------------------------------------------------------
-def variants_public_by_id(sid, public_reverse):
+def variants_public_by_id(sid):
+    public_reverse = load_public_reverse()
     return public_reverse.get(sid)

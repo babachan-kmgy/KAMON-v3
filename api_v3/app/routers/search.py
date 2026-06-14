@@ -1,16 +1,14 @@
 from fastapi import APIRouter
+from app.services.search_engine import search_by_query
 
-from app.services.search.engine import search_surname
-
-# ルーターに prefix を付けることで、URL が二重にならない
 router = APIRouter(prefix="/search")
-
 
 @router.get("")
 def search(q: str):
     """
-    名字検索 API（V3 最適構造版）
-    - 正規化は engine 側で実施
-    - variant 展開 → scorer → 読み統合 → 結果整形
+    名字検索 API（V3 完全版）
+    - 正規化（漢字・読み・ローマ字）
+    - variant_map_v3 による揺れ吸収
+    - stable_id ベースで public_surname_v3.json を返す
     """
-    return search_surname(q)
+    return search_by_query(q)
